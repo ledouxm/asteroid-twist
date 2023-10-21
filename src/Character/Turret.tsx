@@ -2,7 +2,7 @@ import { useKeyboardControls } from "@react-three/drei";
 import { useFrame, useThree } from "@react-three/fiber";
 import { useEffect, useRef } from "react";
 import { Group, Mesh, Quaternion, Vector3 } from "three";
-import { Controls } from "./App";
+import { Controls } from "../App";
 import { Bullet } from "./Bullet";
 import { useRapier } from "@react-three/rapier";
 

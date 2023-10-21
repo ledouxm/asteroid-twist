@@ -1,7 +1,7 @@
 import { Canvas } from "@react-three/fiber";
 import { Physics } from "@react-three/rapier";
 import { Circle, KeyboardControls, OrbitControls } from "@react-three/drei";
-import { Character, innerRadius } from "./Character";
+import { Character, innerRadius } from "./Character/Character";
 import "./AsteroidSpawner";
 import { AsteroidSpawner } from "./AsteroidSpawner";
 
@@ -11,10 +11,11 @@ function App() {
             <KeyboardControls map={keyboardControlsMap}>
                 <Canvas orthographic camera={{ zoom: 40 }} shadows>
                     <ambientLight />
-                    <pointLight position={[0, 0, 10]} intensity={50} />
-                    <Physics gravity={[0, 0, 0]} debug>
+                    {/* <pointLight position={[0, 0, 10]} intensity={50} /> */}
+                    <directionalLight position={[0, 0, 10]} intensity={1} />
+                    <Physics gravity={[0, 0, 0]}>
                         <Character />
-                        <AsteroidSpawner />
+                        {/* <AsteroidSpawner /> */}
                     </Physics>
                     <OrbitControls />
                     <Circle args={[innerRadius, 64]} position={[0, 0, -50]}>

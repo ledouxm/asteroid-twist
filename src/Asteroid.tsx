@@ -6,6 +6,7 @@ import {
 } from "@react-three/rapier";
 import { useEffect, useRef, useState } from "react";
 import {
+    Color,
     CylinderGeometry,
     Euler,
     Mesh,
@@ -13,7 +14,8 @@ import {
     Quaternion,
     Vector3,
 } from "three";
-import { innerRadius } from "./Character";
+import { innerRadius } from "./Character/Character";
+import { ConvexGeometry } from "three/examples/jsm/geometries/ConvexGeometry.js";
 
 export class Asteroid extends Mesh {
     rigidbody: RapierRigidBody;
@@ -27,11 +29,26 @@ export class Asteroid extends Mesh {
         public maxScale = 3,
         public health = 100
     ) {
-        const nbSides = Math.round(Math.random() * 4 + 4);
+        const nbSides = Math.round(Math.random() * 30 + 7);
         const scale = Math.random() * (maxScale - minScale) + minScale;
+
+        const points = [];
+        for (let i = 0; i < nbSides; i++) {
+            points.push(
+                new Vector3(
+                    (Math.random() - 0.5) * scale,
+                    (Math.random() - 0.5) * scale,
+                    (Math.random() - 0.5) * scale
+                )
+            );
+        }
+
+        const color = Math.random() / 2;
+
         super(
-            new CylinderGeometry(0.5 * scale, 0.5 * scale, 1 * scale, nbSides),
-            new MeshStandardMaterial({ color: "hotpink" })
+            // new CylinderGeometry(0.5 * scale, 0.5 * scale, 1 * scale, nbSides),
+            new ConvexGeometry(points),
+            new MeshStandardMaterial({ color: new Color(color, color, color) })
         );
 
         this.rotateX(Math.PI / 2);
@@ -73,7 +90,7 @@ export class Asteroid extends Mesh {
         );
 
         this.rigidbody.addForce(direction, true);
-        const max = 50;
+        const max = 10;
         const randomTorqueVector = new Vector3(
             Math.random() * (max * 2) - max,
             Math.random() * (max * 2) - max,

@@ -10,7 +10,7 @@ import {
     Quaternion,
     Vector3,
 } from "three";
-import { Asteroid } from "./Asteroid";
+import { Asteroid } from "../Asteroid";
 
 export class Bullet extends Mesh {
     rigidbody: RapierRigidBody;
