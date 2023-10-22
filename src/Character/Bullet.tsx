@@ -23,14 +23,19 @@ export class Bullet extends Mesh {
         public config = {
             speed: 50,
             maxRange: 15,
-            damage: 50,
+            damage: 5,
             size: 0.1,
             color: "red",
         }
     ) {
         super(
             new BoxGeometry(config.size, 0.3, 2),
-            new MeshStandardMaterial({ color: config.color })
+            new MeshStandardMaterial({
+                color: config.color,
+                emissive: config.color,
+                emissiveIntensity: 5,
+                toneMapped: false,
+            })
         );
         this.rotation.setFromQuaternion(this.initialQuaternion);
 
@@ -83,6 +88,7 @@ export class Bullet extends Mesh {
             const asteroid = (handle.parent()?.userData as any)
                 .asteroid as unknown as Asteroid;
             if (!asteroid) return;
+            console.log(asteroid);
             asteroid.dealDamage(this.config.damage);
 
             this.destroy();

@@ -9,6 +9,7 @@ import {
     Color,
     CylinderGeometry,
     Euler,
+    Group,
     Mesh,
     MeshStandardMaterial,
     Quaternion,
@@ -16,11 +17,15 @@ import {
 } from "three";
 import { innerRadius } from "./Character/Character";
 import { ConvexGeometry } from "three/examples/jsm/geometries/ConvexGeometry.js";
+import { HealthBarClass } from "./HealthBar";
 
-export class Asteroid extends Mesh {
+export class Asteroid extends Group {
+    mesh: Mesh;
     rigidbody: RapierRigidBody;
     collider: any;
     dead = false;
+    healthBar: HealthBarClass;
+
     constructor(
         public rapier: RapierContext,
         public speed = 2,
@@ -29,6 +34,7 @@ export class Asteroid extends Mesh {
         public maxScale = 3,
         public health = 100
     ) {
+        super();
         const nbSides = Math.round(Math.random() * 30 + 7);
         const scale = Math.random() * (maxScale - minScale) + minScale;
 
@@ -45,13 +51,17 @@ export class Asteroid extends Mesh {
 
         const color = Math.random() / 2;
 
-        super(
+        this.mesh = new Mesh(
             // new CylinderGeometry(0.5 * scale, 0.5 * scale, 1 * scale, nbSides),
             new ConvexGeometry(points),
-            new MeshStandardMaterial({ color: new Color(color, color, color) })
+            new MeshStandardMaterial({
+                color: new Color(color, color, color),
+            })
         );
 
-        this.rotateX(Math.PI / 2);
+        this.add(this.mesh);
+
+        // this.rotateX(Math.PI / 2);
 
         const spawnPoint = randomPointOnCircle(this.spawnRadius);
         this.position.set(spawnPoint.x, spawnPoint.y, 0);
@@ -69,12 +79,8 @@ export class Asteroid extends Mesh {
             .setUserData({ asteroid: this });
         this.rigidbody = this.rapier.world.createRigidBody(rbDesc);
 
-        // const colliderDesc = this.rapier.rapier.ColliderDesc.cylinder(
-        //     scale / 2,
-        //     0.5 * scale
-        // )
         const colliderDesc = this.rapier.rapier.ColliderDesc.convexHull(
-            this.geometry.attributes.position.array as Float32Array
+            this.mesh.geometry.getAttribute("position")!.array as Float32Array
         )!
             .setTranslation(0, 0, 0)
             .setRotation(
@@ -97,9 +103,14 @@ export class Asteroid extends Mesh {
             Math.random() * (max * 2) - max
         );
         this.rigidbody.applyTorqueImpulse(randomTorqueVector, true);
+
+        this.healthBar = new HealthBarClass(health, health, 5, 0.5);
+        this.add(this.healthBar);
     }
 
     update(_delta: number) {
+        this.healthBar.update();
+
         if (this.dead) return;
         this.position.copy(this.rigidbody.translation() as Vector3);
 
@@ -118,7 +129,7 @@ export class Asteroid extends Mesh {
         );
 
         // offsets Math.PI / 2 to the model rotation
-        this.quaternion.copy(
+        this.mesh.quaternion.copy(
             rot.multiply(
                 new Quaternion().setFromAxisAngle(
                     new Vector3(1, 0, 0),
@@ -127,12 +138,12 @@ export class Asteroid extends Mesh {
             )
         );
 
-        this.rotation.setFromQuaternion(rot);
+        this.mesh.rotation.setFromQuaternion(rot);
     }
 
     dealDamage(damage: number) {
-        this.health -= damage;
-        if (this.health <= 0) {
+        this.healthBar.setHealth(this.healthBar.health - damage);
+        if (this.healthBar.health <= 0) {
             this.destroy();
         }
     }
@@ -141,6 +152,9 @@ export class Asteroid extends Mesh {
         this.rapier.world.removeCollider(this.collider, false);
         this.rapier.world.removeRigidBody(this.rigidbody);
         this.rapier.rigidBodyStates.delete(this.rigidbody.handle);
+
+        this.removeFromParent();
+
         this.dead = true;
     }
 }

@@ -1,21 +1,33 @@
 import { Canvas } from "@react-three/fiber";
 import { Physics } from "@react-three/rapier";
-import { Circle, KeyboardControls, OrbitControls } from "@react-three/drei";
+import {
+    Circle,
+    KeyboardControls,
+    OrbitControls,
+    Stars,
+} from "@react-three/drei";
 import { Character, innerRadius } from "./Character/Character";
 import "./AsteroidSpawner";
 import { AsteroidSpawner } from "./AsteroidSpawner";
+import { NodeToyTick } from "@nodetoy/react-nodetoy";
+import { Suspense } from "react";
+import { EffectComposer, Bloom, SSAO } from "@react-three/postprocessing";
 
 function App() {
     return (
         <>
             <KeyboardControls map={keyboardControlsMap}>
-                <Canvas orthographic camera={{ zoom: 40 }} shadows>
+                <Canvas
+                    orthographic
+                    camera={{ zoom: 40, position: [0, 0, 100] }}
+                    shadows
+                >
                     <ambientLight />
                     {/* <pointLight position={[0, 0, 10]} intensity={50} /> */}
                     <directionalLight position={[0, 0, 10]} intensity={1} />
                     <Physics gravity={[0, 0, 0]}>
                         <Character />
-                        {/* <AsteroidSpawner /> */}
+                        <AsteroidSpawner />
                     </Physics>
                     <OrbitControls />
                     <Circle args={[innerRadius, 64]} position={[0, 0, -50]}>
@@ -25,11 +37,18 @@ function App() {
                         rotation={[0, 0, 0]}
                         position={[0, 0, -51]}
                         name="ground"
+                        visible={false}
                     >
                         <planeGeometry args={[100, 100]} />
                         <meshStandardMaterial color="black" />
                     </mesh>
-                    <axesHelper />
+                    <Stars />
+                    <NodeToyTick />
+                    <Suspense fallback={null}>
+                        <EffectComposer>
+                            <Bloom mipmapBlur luminanceThreshold={1} />
+                        </EffectComposer>
+                    </Suspense>
                 </Canvas>
             </KeyboardControls>
         </>

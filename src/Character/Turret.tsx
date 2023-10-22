@@ -6,7 +6,7 @@ import { Controls } from "../App";
 import { Bullet } from "./Bullet";
 import { useRapier } from "@react-three/rapier";
 
-const fireRate = 500;
+const fireRate = 100;
 
 export const Turret = () => {
     const ref = useRef<Group>(null);
@@ -32,7 +32,7 @@ export const Turret = () => {
         );
 
         if (intersects.length === 0) return;
-        const dest = intersects[0].point;
+        const dest = intersects[0]!.point;
 
         // apply character rotation and rotate mesh
         const direction = dest.sub(character.position).normalize();
@@ -70,11 +70,11 @@ export const Turret = () => {
 
     return (
         <group position={[0, 0, 0.5]} ref={ref}>
-            <mesh>
+            {/* <mesh>
                 <sphereGeometry args={[0.4]} />
                 <meshStandardMaterial color="red" />
-            </mesh>
-            <mesh position={[0, 0.5, 0]}>
+            </mesh> */}
+            <mesh position={[0, 0.5, -2]}>
                 <cylinderGeometry args={[0.1, 0.1, 0.5]} />
                 <meshStandardMaterial color="blue" />
             </mesh>

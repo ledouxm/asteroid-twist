@@ -1,27 +1,29 @@
 {
     "compilerOptions": {
+        "moduleResolution": "node",
         "target": "ES2020",
         "useDefineForClassFields": true,
-        "lib": ["ES2020", "DOM", "DOM.Iterable"],
         "module": "ESNext",
         "skipLibCheck": true,
-
-        /* Bundler mode */
-        "moduleResolution": "bundler",
         "allowImportingTsExtensions": true,
         "resolveJsonModule": true,
         "isolatedModules": true,
         "noEmit": true,
         "jsx": "react-jsx",
-
+        "lib": ["ES2020", "DOM", "DOM.Iterable"],
         "esModuleInterop": true,
-
-        /* Linting */
-        "strict": true,
         "noUnusedLocals": true,
         "noUnusedParameters": true,
-        "noFallthroughCasesInSwitch": true
+        "noFallthroughCasesInSwitch": true,
+        "allowJs": true,
+        "baseUrl": ".",
+        "checkJs": true,
+        "forceConsistentCasingInFileNames": true,
+        "incremental": true,
+        "noUncheckedIndexedAccess": true,
+
+        "strict": true
     },
-    "include": ["src", "**/*.frag"],
+    "include": ["src"],
     "references": [{ "path": "./tsconfig.node.json" }]
 }

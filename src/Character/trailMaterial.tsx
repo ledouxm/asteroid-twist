@@ -1,20 +1,4 @@
-import { extend } from "@react-three/fiber";
-import trailFragmentShader from "../shaders/trail.frag";
-import trailVertexShader from "../shaders/trail.vert";
-import { shaderMaterial } from "@react-three/drei";
+import { NodeToyMaterial } from "@nodetoy/react-nodetoy";
+import shaderData from "../shaders/trail.json";
 
-export const TrailMaterial = shaderMaterial(
-    {},
-    trailVertexShader,
-    trailFragmentShader
-);
-
-extend({ TrailMaterial });
-
-declare global {
-    namespace JSX {
-        interface IntrinsicElements {
-            trailMaterial: any;
-        }
-    }
-}
+export const TrailMaterial = () => <NodeToyMaterial data={shaderData} />;
